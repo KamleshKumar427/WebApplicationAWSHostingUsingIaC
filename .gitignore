@@ -1,0 +1,11 @@
+# Root ignores
+node_modules
+dist
+.DS_Store
+.env
+
+# Frontend
+frontend/dist
+
+# Backend
+backend/dist
