@@ -45,23 +45,25 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: true,
   })
 );
 
+const api = express.Router();
+
 // Routes
 // 1) Health
-app.get('/health', (_req: Request, res: Response) => {
+api.get('/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok' });
 });
 
 // 2) Get portfolio
-app.get('/portfolio', (_req: Request, res: Response) => {
+api.get('/portfolio', (_req: Request, res: Response) => {
   res.json({ holdings: portfolio, prices: mockPrices, summary: getSummary() });
 });
 
 // 3) Add/Update holding
-app.post('/portfolio', (req: Request, res: Response) => {
+api.post('/portfolio', (req: Request, res: Response) => {
   const { ticker, shares, buyPrice } = req.body ?? {};
 
   const validTicker = typeof ticker === 'string' && ticker.trim().length > 0;
@@ -85,17 +87,20 @@ app.post('/portfolio', (req: Request, res: Response) => {
   }
 
   // Make sure we have a mock current price for any newly seen ticker
-  ensureMockPrice(T, existing ? existing.buyPrice : buyPrice);
+    ensureMockPrice(T, existing ? existing.buyPrice : buyPrice);
 
   res.json({ ok: true, portfolio, summary: getSummary() });
 });
 
 // 4) Delete holding
-app.delete('/portfolio/:ticker', (req: Request, res: Response) => {
+api.delete('/portfolio/:ticker', (req: Request, res: Response) => {
   const t = String(req.params.ticker || '').toUpperCase();
   portfolio = portfolio.filter((h) => h.ticker !== t);
   res.json({ ok: true, portfolio, summary: getSummary() });
 });
+
+app.use('/api', api);
+app.use('/', api);
 
 // Start server
 const port = Number(process.env.PORT) || 4000;
