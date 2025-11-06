@@ -196,6 +196,33 @@ This cleans up your account to avoid charges.
 
 ---
 
+### macOS / Linux (bash)
+
+Each bash script lives in `scripts/LinuxAndMacDeploymentScripts/`. Make sure you **source** the environment script so the variables stay in your shell:
+
+```bash
+source scripts/LinuxAndMacDeploymentScripts/set-env.sh
+```
+
+Then run the remaining commands:
+
+```bash
+bash scripts/LinuxAndMacDeploymentScripts/init-infra.sh
+bash scripts/LinuxAndMacDeploymentScripts/deploy-backend.sh
+bash scripts/LinuxAndMacDeploymentScripts/deploy-frontend.sh
+bash scripts/LinuxAndMacDeploymentScripts/verify.sh
+```
+
+When you are done:
+
+```bash
+bash scripts/LinuxAndMacDeploymentScripts/destroy-all.sh
+```
+
+These scripts perform the same steps as the PowerShell versions (including tearing down the CDK bootstrap stack).
+
+---
+
 ## 🧱 5. What’s Inside the Project
 
 ```
@@ -217,13 +244,21 @@ your-project/
 │   ├── package.json
 │   └── build config
 │
-└── scripts/.windowsDeploymentScripts/  # PowerShell scripts for Windows deployment
-    ├── set-env.ps1
-    ├── init-infra.ps1
-    ├── deploy-backend.ps1
-    ├── deploy-frontend.ps1
-    ├── verify.ps1
-    └── destroy-all.ps1
+└── scripts/
+    ├── .windowsDeploymentScripts/  # PowerShell scripts for Windows deployment
+    │   ├── set-env.ps1
+    │   ├── init-infra.ps1
+    │   ├── deploy-backend.ps1
+    │   ├── deploy-frontend.ps1
+    │   ├── verify.ps1
+    │   └── destroy-all.ps1
+    └── LinuxAndMacDeploymentScripts/     # Bash scripts for macOS / Linux deployment
+        ├── set-env.sh
+        ├── init-infra.sh
+        ├── deploy-backend.sh
+        ├── deploy-frontend.sh
+        ├── verify.sh
+        └── destroy-all.sh
 ```
 
 ---
@@ -267,6 +302,18 @@ Always destroy the stack when finished testing to avoid small AWS charges:
 ```
 
 ---
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
