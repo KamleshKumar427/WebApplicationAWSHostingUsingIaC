@@ -1,12 +1,12 @@
-# 🧭 **README — Quickstart Guide (Windows / PowerShell)**
+# **README**
 
 This guide will help you **deploy and test** the full project —
 including **Infrastructure (AWS CDK)**, **Backend (Node.js API)**, and **Frontend (React)** —
-in your own AWS account **from scratch**.
+in your own AWS account **from scratch**. This guide works for deployment via Windows/Mac/Linxu OS
 
 ---
 
-## ⚙️ 1. Setup Your AWS Account
+## 1. Setup Your AWS Account
 
 ### Step 1.1 — Create an AWS Account
 
@@ -30,9 +30,9 @@ Keep that file safe.
 
 ---
 
-## 🧩 2. Install Required Tools
+## 2. Install Required Tools
 
-Open **PowerShell as Administrator** and run each line below:
+Open **Terminal as Administrator** and run each line below:
 
 ```powershell
 # Install Node.js LTS (download installer manually if needed)
@@ -55,7 +55,7 @@ and keep it **running** before deployment.
 
 ---
 
-## 🔑 3. Configure AWS Credentials
+## 3. Configure AWS Credentials
 
 In PowerShell:
 
@@ -82,16 +82,21 @@ You should see your AWS account ID and username.
 
 ---
 
-## 🚀 4. Deploy the Project (Automatic Scripts)
+## 4. Deploy the Project (Automatic Scripts)
 
-Now you’re ready to use the included **PowerShell scripts**.
-
-Each Windows-centric script is located in the `scripts/.windowsDeploymentScripts/` folder of the ZIP.
+Now you’re ready to use the supplied scripts (PowerShell for Windows, bash for macOS/Linux). For each step below, pick the command that matches your OS.
 
 ### Step 4.1 — Set Environment
+Run following commands inside the project's root folder.
 
+*Windows (PowerShell)*  
 ```powershell
 .\scripts\.windowsDeploymentScripts\set-env.ps1
+```
+
+*macOS / Linux (bash)*  
+```bash
+source scripts/LinuxAndMacDeploymentScripts/set-env.sh
 ```
 
 This sets your AWS profile and region for all other scripts.
@@ -100,39 +105,35 @@ This sets your AWS profile and region for all other scripts.
 
 ### Step 4.2 — Create the Infrastructure
 
-This uses **AWS CDK** to create:
+This uses **AWS CDK** to create the infrastructure:
 
-* VPC and networking
-* ECS cluster for backend (Dockerized)
-* ECR repository (stores backend images)
-* Application Load Balancer
-* S3 bucket + CloudFront CDN for frontend
-* Stores all key URLs in **AWS Systems Manager Parameter Store (SSM)**
 
-Run:
 
+*Windows (PowerShell)*  
 ```powershell
 .\scripts\.windowsDeploymentScripts\init-infra.ps1
 ```
 
-🕐 *Takes about 5–10 minutes on first deploy.*
+*macOS / Linux (bash)*  
+```bash
+bash scripts/LinuxAndMacDeploymentScripts/init-infra.sh
+```
 
-When it finishes, the infrastructure is ready to host your app.
+🕐 *Takes about 5–10 minutes on first deploy.* When it finishes, the infrastructure is ready to host your app.
 
 ---
 
 ### Step 4.3 — Deploy the Backend
 
-This will:
 
-* Build the backend’s **Docker image**
-* Push it to **Amazon ECR**
-* Update **ECS service** to use that new image
-
-Run:
-
+*Windows (PowerShell)*  
 ```powershell
 .\scripts\.windowsDeploymentScripts\deploy-backend.ps1
+```
+
+*macOS / Linux (bash)*  
+```bash
+bash scripts/LinuxAndMacDeploymentScripts/deploy-backend.sh
 ```
 
 🕐 *Takes 2–3 minutes.*
@@ -141,22 +142,18 @@ Run:
 
 ### Step 4.4 — Deploy the Frontend
 
-This will:
 
-* Fetch the backend’s URL from AWS (automatically)
-* Build the React app with that API URL injected
-* Upload static files to **S3**
-* Refresh **CloudFront** so the latest version is served
-
-Run:
-
+*Windows (PowerShell)*  
 ```powershell
 .\scripts\.windowsDeploymentScripts\deploy-frontend.ps1
 ```
 
-🕐 *Takes about 2 minutes.*
+*macOS / Linux (bash)*  
+```bash
+bash scripts/LinuxAndMacDeploymentScripts/deploy-frontend.sh
+```
 
-When finished, it will print something like:
+🕐 *Takes about 2 minutes.* When finished, it prints something like:
 
 ```
 Frontend deployed. Open: https://d123abc.cloudfront.net
@@ -166,10 +163,14 @@ Frontend deployed. Open: https://d123abc.cloudfront.net
 
 ### Step 4.5 — Verify the Deployment
 
-Run:
-
+*Windows (PowerShell)*  
 ```powershell
 .\scripts\.windowsDeploymentScripts\verify.ps1
+```
+
+*macOS / Linux (bash)*  
+```bash
+bash scripts/LinuxAndMacDeploymentScripts/verify.sh
 ```
 
 You’ll see both URLs printed:
@@ -179,51 +180,35 @@ Frontend URL: https://d123abc.cloudfront.net
 Backend URL : http://my-api-alb-123.eu-north-1.elb.amazonaws.com
 ```
 
-➡️ **Open the Frontend URL** in a browser —
-you should see the app running and fetching data from the backend.
+➡️ **Open the Frontend URL** in a browser — you should see the app running and fetching data from the backend.
+
+* Your **frontend** should be live on a CloudFront URL
+  (e.g., `https://d123abc.cloudfront.net`)
+* Your **backend** should be accessible through an ALB URL
+  (e.g., `http://my-api-alb-123.eu-north-1.elb.amazonaws.com`)
+* Visiting the frontend will show data fetched from the backend API.
 
 ---
 
 ### Step 4.6 — (Optional) Destroy Everything
 
-When done testing, you can remove all created AWS resources:
+When you are done testing, remove all created AWS resources (including the CDK bootstrap stack):
 
+*Windows (PowerShell)*  
 ```powershell
 .\scripts\.windowsDeploymentScripts\destroy-all.ps1
 ```
 
-This cleans up your account to avoid charges.
-
----
-
-### macOS / Linux (bash)
-
-Each bash script lives in `scripts/LinuxAndMacDeploymentScripts/`. Make sure you **source** the environment script so the variables stay in your shell:
-
-```bash
-source scripts/LinuxAndMacDeploymentScripts/set-env.sh
-```
-
-Then run the remaining commands:
-
-```bash
-bash scripts/LinuxAndMacDeploymentScripts/init-infra.sh
-bash scripts/LinuxAndMacDeploymentScripts/deploy-backend.sh
-bash scripts/LinuxAndMacDeploymentScripts/deploy-frontend.sh
-bash scripts/LinuxAndMacDeploymentScripts/verify.sh
-```
-
-When you are done:
-
+*macOS / Linux (bash)*  
 ```bash
 bash scripts/LinuxAndMacDeploymentScripts/destroy-all.sh
 ```
 
-These scripts perform the same steps as the PowerShell versions (including tearing down the CDK bootstrap stack).
+The scripts clean up the account so the next `init-infra` run starts fresh.
 
 ---
 
-## 🧱 5. What’s Inside the Project
+## 5. What’s Inside the Project
 
 ```
 your-project/
@@ -261,60 +246,9 @@ your-project/
         └── destroy-all.sh
 ```
 
----
 
-## 🌐 6. How It Works (Simplified)
-
-1. **Infrastructure (CDK)** builds everything in your AWS account:
-
-   * Networking (VPC)
-   * ECS + ECR for backend
-   * S3 + CloudFront for frontend
-   * SSM Parameters to share URLs between them
-
-2. **Backend** runs in ECS as a containerized Node.js API.
-
-3. **Frontend** (React) is a static website hosted on S3, served via CloudFront.
-
-4. The frontend automatically connects to the backend using the URL stored in SSM —
-   so you don’t need to manually copy anything.
 
 ---
-
-## ✅ 7. Expected Results
-
-After completing all steps:
-
-* Your **frontend** should be live on a CloudFront URL
-  (e.g., `https://d123abc.cloudfront.net`)
-* Your **backend** should be accessible through an ALB URL
-  (e.g., `http://my-api-alb-123.eu-north-1.elb.amazonaws.com`)
-* Visiting the frontend will show data fetched from the backend API.
-
----
-
-## 🧹 8. Cleanup Reminder
-
-Always destroy the stack when finished testing to avoid small AWS charges:
-
-```powershell
-.\scripts\.windowsDeploymentScripts\destroy-all.ps1
-```
-
----
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
