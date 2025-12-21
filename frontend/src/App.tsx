@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ResponsiveContainer,
   PieChart,
@@ -23,6 +23,41 @@ type PortfolioResponse = {
 };
 
 type Theme = 'light' | 'dark';
+
+const emptySummary: Summary = { totalInvested: 0, currentValue: 0, totalPL: 0 };
+
+function computeSummary(holdings: Holding[], prices: Record<string, number>): Summary {
+  return holdings.reduce<Summary>((acc, holding) => {
+    const costBasis = holding.shares * holding.buyPrice;
+    const currentPrice = prices[holding.ticker] ?? holding.buyPrice;
+    const currentValue = holding.shares * currentPrice;
+    return {
+      totalInvested: acc.totalInvested + costBasis,
+      currentValue: acc.currentValue + currentValue,
+      totalPL: acc.totalPL + (currentValue - costBasis),
+    };
+  }, { ...emptySummary });
+}
+
+const FALLBACK_HOLDINGS: Holding[] = [
+  { ticker: 'AAPL', shares: 25, buyPrice: 142.5 },
+  { ticker: 'MSFT', shares: 18, buyPrice: 305.2 },
+  { ticker: 'TSLA', shares: 12, buyPrice: 228.1 },
+  { ticker: 'NVDA', shares: 8, buyPrice: 410.5 },
+];
+
+const FALLBACK_PRICES: Record<string, number> = {
+  AAPL: 189.32,
+  MSFT: 415.76,
+  TSLA: 255.67,
+  NVDA: 468.13,
+};
+
+const FALLBACK_PORTFOLIO: PortfolioResponse = {
+  holdings: FALLBACK_HOLDINGS,
+  prices: FALLBACK_PRICES,
+  summary: computeSummary(FALLBACK_HOLDINGS, FALLBACK_PRICES),
+};
 
 const currency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
 
@@ -64,41 +99,50 @@ export default function App() {
   const [buyPrice, setBuyPrice] = useState('');
 
   // Toast helper
-  function addToast(toast: Omit<Toast, 'id'>, ttl = 2400) {
+  const addToast = useCallback((toast: Omit<Toast, 'id'>, ttl = 2400) => {
     const id = Date.now() + Math.random();
     setToasts((prev) => [...prev, { id, ...toast }]);
     window.setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
     }, ttl);
-  }
+  }, []);
 
   // Small fetch wrapper to record backend calls
-  async function api<T = any>(url: string, init?: RequestInit, purpose?: string): Promise<T> {
+  const api = useCallback(async <T = unknown>(url: string, init?: RequestInit, purpose?: string): Promise<T> => {
     const method = (init?.method || 'GET').toUpperCase();
     addToast({ method, url, purpose });
     const res = await fetch(url, init);
+    if (!res.ok) {
+      throw new Error(`${res.status} ${res.statusText}`);
+    }
     return (await res.json()) as T;
-  }
+  }, [addToast]);
 
   // Fetch portfolio from backend
-  async function fetchPortfolio() {
+  const fetchPortfolio = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       const data = await api<PortfolioResponse>(`${API_URL}/portfolio`, undefined, 'Fetch portfolio');
-      setHoldings(data.holdings || []);
-      setPrices(data.prices || {});
-      setSummary(data.summary || { totalInvested: 0, currentValue: 0, totalPL: 0 });
-    } catch (e) {
-      setError('Failed to load portfolio. Please try again.');
+      const safeHoldings = data.holdings || [];
+      const safePrices = data.prices || {};
+      const safeSummary = data.summary || computeSummary(safeHoldings, safePrices);
+      setHoldings(safeHoldings);
+      setPrices(safePrices);
+      setSummary(safeSummary);
+    } catch {
+      setError('Backend is unavailable. Showing demo portfolio data.');
+      setHoldings(FALLBACK_PORTFOLIO.holdings);
+      setPrices(FALLBACK_PORTFOLIO.prices);
+      setSummary(FALLBACK_PORTFOLIO.summary);
     } finally {
       setLoading(false);
     }
-  }
+  }, [api]);
 
   useEffect(() => {
     fetchPortfolio();
-  }, []);
+  }, [fetchPortfolio]);
 
   async function handleAddHolding(e: React.FormEvent) {
     e.preventDefault();
@@ -125,7 +169,7 @@ export default function App() {
       setTicker('');
       setShares('');
       setBuyPrice('');
-    } catch (e) {
+    } catch {
       setError('Failed to add/update holding.');
     }
   }
@@ -135,7 +179,7 @@ export default function App() {
     try {
       await api(`${API_URL}/portfolio/${encodeURIComponent(t)}`, { method: 'DELETE' }, `Delete ${t}`);
       await fetchPortfolio();
-    } catch (e) {
+    } catch {
       setError('Failed to delete holding.');
     }
   }
