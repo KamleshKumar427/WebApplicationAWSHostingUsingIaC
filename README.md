@@ -6,7 +6,7 @@ in your own AWS account **from scratch**. This guide works for deployment via Wi
 
 ---
 
-##Application Screenshots:
+## Application Screenshots:
 <img width="1093" height="1067" alt="image" src="https://github.com/user-attachments/assets/a297d14d-3d92-4938-bb91-d982cb18d9e1" />
 <img width="1108" height="1053" alt="image" src="https://github.com/user-attachments/assets/b038ee51-5499-4f04-8c8e-713eb2d93bb8" />
 
