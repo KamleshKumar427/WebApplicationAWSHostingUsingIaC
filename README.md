@@ -1,10 +1,77 @@
+<img width="1200" height="700" alt="architecture" src="https://github.com/user-attachments/assets/34afdb9c-3e60-43ef-8709-8a126e58109d" />
 # **README**
 
+
+
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#545B64"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="700" fill="#FFFFFF"/>
+  <text x="40" y="50" font-size="28" font-weight="bold" fill="#232F3E">Portfolio Tracker on AWS</text>
+  <text x="40" y="78" font-size="15" fill="#545B64">React frontend and Express API, deployed with AWS CDK</text>
+
+  <rect x="230" y="110" width="930" height="490" rx="14" fill="none" stroke="#232F3E" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <text x="246" y="136" font-size="14" font-weight="bold" fill="#232F3E">AWS Cloud</text>
+
+  <rect x="480" y="290" width="660" height="190" rx="12" fill="#FBFAFF" stroke="#8C4FFF" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="496" y="314" font-size="13" font-weight="bold" fill="#8C4FFF">VPC</text>
+
+  <line x1="190" y1="305" x2="260" y2="305" stroke="#545B64" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="225" y="296" font-size="13" text-anchor="middle" fill="#545B64">HTTPS</text>
+
+  <path d="M 345 260 V 190 H 500" fill="none" stroke="#545B64" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="356" y="232" font-size="13" fill="#545B64">static files</text>
+
+  <path d="M 345 350 V 380 H 520" fill="none" stroke="#545B64" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="356" y="372" font-size="13" fill="#545B64">/api/*</text>
+
+  <line x1="740" y1="380" x2="840" y2="380" stroke="#545B64" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="790" y="370" font-size="13" text-anchor="middle" fill="#545B64">port 8080</text>
+
+  <rect x="40" y="275" width="150" height="60" rx="10" fill="#F2F3F3" stroke="#545B64" stroke-width="2"/>
+  <text x="58" y="302" font-size="16" font-weight="bold" fill="#232F3E">Users</text>
+  <text x="58" y="322" font-size="13" fill="#545B64">web browser</text>
+
+  <rect x="260" y="260" width="170" height="90" rx="10" fill="#F4EEFF" stroke="#8C4FFF" stroke-width="2"/>
+  <text x="276" y="296" font-size="15" font-weight="bold" fill="#232F3E">Amazon CloudFront</text>
+  <text x="276" y="318" font-size="13" fill="#545B64">single HTTPS entry</text>
+
+  <rect x="500" y="150" width="200" height="80" rx="10" fill="#EEF7EA" stroke="#3F8624" stroke-width="2"/>
+  <text x="516" y="182" font-size="15" font-weight="bold" fill="#232F3E">Amazon S3</text>
+  <text x="516" y="204" font-size="13" fill="#545B64">React frontend</text>
+
+  <rect x="520" y="345" width="220" height="70" rx="10" fill="#F4EEFF" stroke="#8C4FFF" stroke-width="2"/>
+  <text x="534" y="373" font-size="14" font-weight="bold" fill="#232F3E">Application Load Balancer</text>
+  <text x="534" y="395" font-size="13" fill="#545B64">routes /api traffic</text>
+
+  <rect x="840" y="345" width="240" height="70" rx="10" fill="#FFF2E8" stroke="#ED7100" stroke-width="2"/>
+  <text x="856" y="373" font-size="15" font-weight="bold" fill="#232F3E">Amazon ECS on Fargate</text>
+  <text x="856" y="395" font-size="13" fill="#545B64">Express API container</text>
+
+  <rect x="520" y="510" width="180" height="60" rx="10" fill="#EEF7EA" stroke="#3F8624" stroke-width="2"/>
+  <text x="534" y="536" font-size="14" font-weight="bold" fill="#232F3E">Amazon ECR</text>
+  <text x="534" y="556" font-size="12" fill="#545B64">container images</text>
+
+  <rect x="720" y="510" width="200" height="60" rx="10" fill="#FDEBF4" stroke="#E7157B" stroke-width="2"/>
+  <text x="734" y="536" font-size="14" font-weight="bold" fill="#232F3E">CloudWatch Logs</text>
+  <text x="734" y="556" font-size="12" fill="#545B64">application logs</text>
+
+  <rect x="940" y="510" width="200" height="60" rx="10" fill="#FDEEF0" stroke="#DD344C" stroke-width="2"/>
+  <text x="954" y="536" font-size="14" font-weight="bold" fill="#232F3E">AWS IAM</text>
+  <text x="954" y="556" font-size="12" fill="#545B64">task permissions</text>
+
+  <rect x="380" y="630" width="440" height="40" rx="20" fill="#F2F3F3" stroke="#545B64" stroke-width="1.5"/>
+  <text x="600" y="655" font-size="14" font-weight="bold" text-anchor="middle" fill="#232F3E">Infrastructure as code: AWS CDK (TypeScript)</text>
+</svg>
+
+---
 This guide will help you **deploy and test** the full project —
 including **Infrastructure (AWS CDK)**, **Backend (Node.js API)**, and **Frontend (React)** —
 in your own AWS account **from scratch**. This guide works for deployment via Windows/Mac/Linxu OS
-
----
 
 ## Application Screenshots:
 <img width="1093" height="1067" alt="image" src="https://github.com/user-attachments/assets/a297d14d-3d92-4938-bb91-d982cb18d9e1" />
